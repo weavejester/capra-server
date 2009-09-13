@@ -1,38 +1,22 @@
 (ns capra.server.controller
   "Capra server controller functions."
-  (:use capra.server.sdb))
-
-(defn- get-account
-  "Retrieve an existing account by name."
-  [name]
-  (get-attrs :accounts name))
-
-(defn- put-account
-  "Save a new account using the name as a key."
-  [account]
-  (put-attrs :accounts
-    (assoc account :sdb/id (account :name))))
-
-(defn- get-account-names
-  "Retrieve all current account names."
-  []
-  (query '{:select [:name] :from "accounts"}))
+  (:require [capra.server.model.account :as account]))
 
 (defn create-account
   "Create a new account."
-  [account]
+  [new-account]
   (cond
-    (nil? (account :name))
+    (nil? (new-account :name))
       [400 "Account must have a name"]
-    (nil? (account :passkey))
+    (nil? (new-account :passkey))
       [400 "Account must have a passkey"]
-    (get-account (account :name))
+    (account/get (new-account :name))
       [403 "Account already exists"]
     :if-valid
-      (do (put-account account)
+      (do (account/put new-account)
           [201 "Account created"])))
 
 (defn list-account-names
   "List all account names."
   []
-  (prn-str (get-account-names)))
+  (prn-str (account/list-names)))
