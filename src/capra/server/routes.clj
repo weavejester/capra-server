@@ -5,7 +5,7 @@
 (defroutes public-routes
   "Routes to resources that do not need authentication."
   (GET "/accounts"
-    (list-account-names))
+    (list-accounts))
   (POST "/accounts"
     (create-account params)))
 
