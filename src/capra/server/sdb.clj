@@ -9,16 +9,21 @@
     user/aws-key
     user/aws-secret-key))
 
+(defn create-domain
+  "Create a new domain."
+  [domain]
+  (sdb/create-domain aws-client (as-str domain)))
+
 (defn get-attrs
   "Return a map of a stored value without the sdb/id key."
-  [bucket id]
-  (let [value (sdb/get-attrs aws-client (as-str bucket) id)]
+  [domain id]
+  (let [value (sdb/get-attrs aws-client (as-str domain) id)]
     (dissoc value :sdb/id)))
 
 (defn put-attrs
   "Store a map of attributes in SimpleDB"
-  [bucket attrs]
-  (sdb/put-attrs aws-client (as-str bucket) attrs))
+  [domain attrs]
+  (sdb/put-attrs aws-client (as-str domain) attrs))
 
 (defn query
   "Query SimpleDB."
