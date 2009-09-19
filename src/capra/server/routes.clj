@@ -12,7 +12,11 @@
   (POST "/"
     (create-account params))
   (GET "/:account"
-    (show-account (params :account))))
+    (show-account (params :account)))
+  (GET "/:account/:package/*"
+    (show-package (params :account)
+                  (params :package)
+                  (params :*))))
 
 (defroutes private-routes
   (PUT "/:account"

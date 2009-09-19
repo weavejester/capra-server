@@ -17,3 +17,9 @@
     :else
       (do (package/put (dissoc new-package :files))
           (response/created (package-uri new-package)))))
+
+(defn show-package
+  "Show an existing package."
+  [account name version]
+  (response/resource
+    (package/get [account name version])))
