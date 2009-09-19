@@ -1,5 +1,7 @@
 (ns capra.server.routes
   (:use capra.server.controller)
+  (:use capra.server.auth)
+  (:use compojure.control)
   (:use compojure.http.routes))
 
 (defroutes public-routes
@@ -11,7 +13,16 @@
   (GET "/:account"
     (show-account (params :account))))
 
+(defroutes private-routes
+  (PUT "/:account"
+    (update-account (params :account)
+                    (dissoc params :account))))
+
+(decorate private-routes
+  with-account-auth)
+
 (defroutes handler
   "Main handler function."
   public-routes
-  [404 "Resource not found"])
+  private-routes
+  (ANY "*" [404 "Resource not found"]))

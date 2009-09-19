@@ -29,3 +29,13 @@
   (response/resource
     (for [name (account/list-names)]
       {:name name, :href (str "/" name)})))
+
+(defn update-account
+  "Update an existing account."
+  [name delta]
+  (let [delta (dissoc delta :name)]
+    (if-let [existing (account/get name)]
+      (let [updated (merge existing delta)]
+        (account/put updated)
+        (response/resource
+          (dissoc updated :passkey))))))

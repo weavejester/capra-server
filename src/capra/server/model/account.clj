@@ -25,4 +25,5 @@
 (defn valid?
   "Is the supplied account name and passkey valid?"
   [name pass]
-  (= (:passkey (get name)) pass))
+  (if (and name pass)
+    (= (:passkey (get name)) pass)))

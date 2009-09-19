@@ -28,6 +28,11 @@
   [error-message]
   (make-response 403 error-message))
 
+(defn not-found
+  "Return a 'not-found' response"
+  [error-message]
+  (make-response 404 error-message))
+
 (defn auth-required
   "Return a 'authentication required' response"
   [realm]
