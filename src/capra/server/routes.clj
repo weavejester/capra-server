@@ -1,5 +1,5 @@
 (ns capra.server.routes
-  (:use capra.server.controller)
+  (:use capra.server.controller.account)
   (:use capra.server.auth)
   (:use compojure.control)
   (:use compojure.http.routes))

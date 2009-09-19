@@ -1,5 +1,5 @@
-(ns capra.server.controller
-  "Capra server controller functions."
+(ns capra.server.controller.account
+  "Capra server controller functions for managing accounts."
   (:require [capra.server.response :as response])
   (:require [capra.server.model.account :as account])
   (:require [capra.server.model.package :as package]))
