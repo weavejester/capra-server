@@ -5,20 +5,20 @@
 
 (defn get
   "Retrieve an existing package by account, name and version."
-  [account name version]
-  (let [package (get-attrs :packages [account name version])]
+  [[account name version]]
+  (let [package (get-attrs :packages (str account "/" name "/" version))]
     (if (package :name)
       package)))
 
 (defn key
   "Return a unique key for a package"
   [package]
-  [(package :account) (package :name) (package :version)])
+  (str (package :account) "/" (package :name) "/" (package :version)))
 
 (defn put
   "Save a new package using the account, name and version as a key."
   [package]
-  (put-attrs :package
+  (put-attrs :packages
     (assoc package :sdb/id (key package))))
 
 (defn list

@@ -25,6 +25,7 @@
   (fn [request]
     (let [[user pass] (get-auth-info request)
           req-account (get-account request)]
+      (prn pass)
       (if (and (= user req-account)
                (account/valid? user pass))
         (handler request)

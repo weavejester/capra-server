@@ -1,5 +1,6 @@
 (ns capra.server.controller.account
   "Capra server controller functions for managing accounts."
+  (:use capra.server.util)
   (:require [capra.server.response :as response])
   (:require [capra.server.model.account :as account])
   (:require [capra.server.model.package :as package]))
@@ -16,12 +17,7 @@
       (response/forbidden "Account already exists")
     :else
       (do (account/put new-account)
-          (response/created (str "/" (new-account :name))))))
-
-(defn- package-uri
-  "Return the relative URI of a package."
-  [pkg]
-  (str "/" (pkg :account) "/" (pkg :name) "/" (pkg :version)))
+          (response/created (account-uri new-account)))))
 
 (defn- account-packages
   "List all packages of an account."

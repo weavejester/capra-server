@@ -1,5 +1,6 @@
 (ns capra.server.routes
   (:use capra.server.controller.account)
+  (:use capra.server.controller.package)
   (:use capra.server.auth)
   (:use compojure.control)
   (:use compojure.http.routes))
@@ -16,7 +17,9 @@
 (defroutes private-routes
   (PUT "/:account"
     (update-account (params :account)
-                    (dissoc params :account))))
+                    (dissoc params :account)))
+  (POST "/:account"
+    (create-package params)))
 
 (decorate private-routes
   with-account-auth)
