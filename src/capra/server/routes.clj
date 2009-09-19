@@ -7,7 +7,9 @@
   (GET "/"
     (list-accounts))
   (POST "/"
-    (create-account params)))
+    (create-account params))
+  (GET "/:account"
+    (show-account (params :account))))
 
 (defroutes handler
   "Main handler function."

@@ -17,6 +17,12 @@
       (do (account/put new-account)
           (response/created (str "/" (new-account :name))))))
 
+(defn show-account
+  "Show an existing account."
+  [name]
+  (response/resource
+    (dissoc (account/get name) :passkey)))
+
 (defn list-accounts
   "List all account names."
   []

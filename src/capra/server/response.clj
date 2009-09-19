@@ -27,3 +27,10 @@
   "Return a 'forbidden' response."
   [error-message]
   (make-response 403 error-message))
+
+(defn auth-required
+  "Return a 'authentication required' response"
+  [realm]
+  {:status 401
+   :headers {"WWW-Authenticate"
+             (str "Basic realm=" (pr-str realm))}})

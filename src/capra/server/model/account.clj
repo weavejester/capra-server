@@ -21,3 +21,8 @@
   []
   (let [accounts (query '{:select [:name] :from "accounts"})]
     (map :name accounts)))
+
+(defn valid?
+  "Is the supplied account name and passkey valid?"
+  [name pass]
+  (= (:passkey (get name)) pass))
