@@ -18,13 +18,25 @@
       (do (account/put new-account)
           (response/created (str "/" (new-account :name))))))
 
+(defn- package-uri
+  "Return the relative URI of a package."
+  [pkg]
+  (str "/" (pkg :account) "/" (pkg :name) "/" (pkg :version)))
+
+(defn- account-packages
+  "List all packages of an account."
+  [account]
+  (for [pkg (package/list account)]
+    (-> pkg (select-keys [:account :name :version :description])
+            (assoc :href (package-uri pkg)))))
+
 (defn show-account
   "Show an existing account."
   [name]
   (response/resource
     (-> (account/get name)
       (dissoc :passkey)
-      (assoc :packages (package/list name)))))
+      (assoc :packages (account-packages name)))))
 
 (defn list-accounts
   "List all account names."
