@@ -1,7 +1,8 @@
 (ns capra.server.controller
   "Capra server controller functions."
   (:require [capra.server.response :as response])
-  (:require [capra.server.model.account :as account]))
+  (:require [capra.server.model.account :as account])
+  (:require [capra.server.model.package :as package]))
 
 (defn create-account
   "Create a new account."
@@ -21,7 +22,9 @@
   "Show an existing account."
   [name]
   (response/resource
-    (dissoc (account/get name) :passkey)))
+    (-> (account/get name)
+      (dissoc :passkey)
+      (assoc :packages (package/list name)))))
 
 (defn list-accounts
   "List all account names."
@@ -33,7 +36,7 @@
 (defn update-account
   "Update an existing account."
   [name delta]
-  (let [delta (dissoc delta :name)]
+  (let [delta (dissoc delta :name :packages)]
     (if-let [existing (account/get name)]
       (let [updated (merge existing delta)]
         (account/put updated)
