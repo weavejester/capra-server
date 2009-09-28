@@ -23,3 +23,12 @@
   [account name version]
   (response/resource
     (package/get [account name version])))
+
+(defn update-package
+  "Update an existing package."
+  [account name version delta]
+  (let [delta (dissoc delta :account :name :files)]
+    (if-let [existing (package/get [account name version])]
+      (let [updated (merge existing delta)]
+        (package/put updated)
+        (response/resource updated)))))

@@ -23,7 +23,12 @@
     (update-account (params :account)
                     (dissoc params :account)))
   (POST "/:account"
-    (create-package params)))
+    (create-package params))
+  (PUT "/:account/:package/*"
+    (update-package (params :account)
+                    (params :package)
+                    (params :*)
+                    (dissoc params :account :package :*))))
 
 (decorate private-routes
   with-account-auth)
