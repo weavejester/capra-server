@@ -19,7 +19,8 @@
   "Save a new package using the account, name and version as a key."
   [package]
   (put-attrs :packages
-    (assoc package :sdb/id (key package))))
+    (assoc package :sdb/id (key package)
+                   :type :package)))
 
 (defn list
   "List all packages for an account."

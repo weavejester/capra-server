@@ -14,7 +14,8 @@
   "Save a new account using the name as a key."
   [account]
   (put-attrs :accounts
-    (assoc account :sdb/id (account :name))))
+    (assoc account :sdb/id (account :name)
+                   :type :account)))
 
 (defn list-names
   "Retrieve all current account names."
