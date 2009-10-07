@@ -21,9 +21,14 @@
     (dissoc value :sdb/id)))
 
 (defn put-attrs
-  "Store a map of attributes in SimpleDB"
+  "Store a map of attributes in SimpleDB."
   [domain attrs]
   (sdb/put-attrs aws-client (as-str domain) attrs))
+
+(defn delete-attrs
+  "Delete attributes from SimpleDB."
+  [domain attrs]
+  (sdb/delete-attrs aws-client (as-str domain) attrs))
 
 (defn query
   "Query SimpleDB."
