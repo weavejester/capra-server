@@ -42,6 +42,4 @@
   (if-let [pkg (package/get [account name version])]
     (let [temp-file (File/createTempFile "capra" ".jar")]
       (copy stream temp-file)
-      (prn temp-file)
-      (let [sha1 (file-sha1 temp-file)]
-        (response/created sha1)))))
+      (response/created (package/put-file pkg temp-file)))))
