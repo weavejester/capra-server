@@ -29,28 +29,21 @@
     (update-package (params :account)
                     (params :package)
                     (params :*)
-                    (dissoc params :account :package :*))))
-
-(defroutes upload-routes
+                    (dissoc params :account :package :*)))
   (POST "/:account/:package/*"
     (upload-package-file (params :account)
                          (params :package)
                          (params :*)
                          (request :body))))
 
-(decorate public-routes
-  with-clojure-params)
-
 (decorate private-routes
-  with-account-auth
-  with-clojure-params)
-
-(decorate upload-routes
   with-account-auth)
-          
+
 (defroutes handler
   "Main handler function."
   public-routes
   private-routes
-  upload-routes
   (ANY "*" [404 "Resource not found"]))
+
+(decorate handler
+  with-clojure-params)

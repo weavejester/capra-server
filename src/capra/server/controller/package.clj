@@ -2,7 +2,10 @@
   "Capra server controller functions for managing packages."
   (:use capra.server.util)
   (:require [capra.server.response :as response])
-  (:require [capra.server.model.package :as package]))
+  (:require [capra.server.model.package :as package])
+  (:use clojure.contrib.duck-streams)
+  (:use clojure.contrib.http.agent)
+  (:import java.io.File))
 
 (defn create-package
   "Create a new package."
@@ -35,5 +38,10 @@
 
 (defn upload-package-file
   "Upload a file into a package."
-  [account package version file]
-  )
+  [account name version stream]
+  (if-let [pkg (package/get [account name version])]
+    (let [temp-file (File/createTempFile "capra" ".jar")]
+      (copy stream temp-file)
+      (prn temp-file)
+      (let [sha1 (file-sha1 temp-file)]
+        (response/created sha1)))))
