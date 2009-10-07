@@ -2,6 +2,7 @@
   (:use capra.server.controller.account)
   (:use capra.server.controller.package)
   (:use capra.server.auth)
+  (:use capra.server.params)
   (:use compojure.control)
   (:use compojure.http.routes))
 
@@ -30,11 +31,26 @@
                     (params :*)
                     (dissoc params :account :package :*))))
 
-(decorate private-routes
-  with-account-auth)
+(defroutes upload-routes
+  (POST "/:account/:package/*"
+    (upload-package-file (params :account)
+                         (params :package)
+                         (params :*)
+                         (request :body))))
 
+(decorate public-routes
+  with-clojure-params)
+
+(decorate private-routes
+  with-account-auth
+  with-clojure-params)
+
+(decorate upload-routes
+  with-account-auth)
+          
 (defroutes handler
   "Main handler function."
   public-routes
   private-routes
+  upload-routes
   (ANY "*" [404 "Resource not found"]))

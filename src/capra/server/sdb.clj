@@ -1,5 +1,5 @@
 (ns capra.server.sdb
-  "Functions for getting SDB data."
+  "Functions for interacting with Amazon SimpleDB."
   (:require [org.clojure.sdb :as sdb])
   (:use clojure.contrib.def)
   (:use clojure.contrib.java-utils))

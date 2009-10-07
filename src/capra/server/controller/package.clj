@@ -32,3 +32,8 @@
       (let [updated (merge existing delta)]
         (package/put updated)
         (response/resource updated)))))
+
+(defn upload-package-file
+  "Upload a file into a package."
+  [account package version file]
+  )
