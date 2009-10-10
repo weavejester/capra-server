@@ -26,16 +26,21 @@
                    :type   :package
                    :files  (pr-str (package :files)))))
 
+(defn- add-file-info
+  "Add file information to a package"
+  [package file-info]
+  (merge-with set/union package {:files #{file-info}}))
+
 (defn put-file
   "Save a file to S3 and reference it in the SDB package."
   [package file]
-  (let [bucket  "capra"
-        object  (file-sha1 file)
-        url     (s3/object-url bucket object)
-        package (merge-with set/union package {:files #{url}})]
-    (s3/put-file bucket object file "application/java-archive")
-    (s3/set-public-readonly bucket object)
-    (put package)
+  (let [bucket "capra"
+        sha1 (file-sha1 file)
+        url  (s3/object-url bucket sha1)
+        file-info {:sha1 sha1, :href url}]
+    (s3/put-file bucket sha1 file "application/java-archive")
+    (s3/set-public-readonly bucket sha1)
+    (put (add-file-info package file-info))
     url))
 
 (defn list

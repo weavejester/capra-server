@@ -27,8 +27,8 @@
 
 (defn delete-attrs
   "Delete attributes from SimpleDB."
-  [domain attrs]
-  (sdb/delete-attrs aws-client (as-str domain) attrs))
+  [domain id]
+  (sdb/delete-attrs aws-client (as-str domain) id))
 
 (defn query
   "Query SimpleDB."
