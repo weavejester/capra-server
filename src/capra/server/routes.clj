@@ -6,6 +6,11 @@
   (:use compojure.control)
   (:use compojure.http.routes))
 
+(defn with-debug [handler]
+  (fn [request]
+    (prn request)
+    (handler request)))
+
 (defroutes public-routes
   "Routes to resources that do not need authentication."
   (GET "/"
@@ -46,4 +51,5 @@
   (ANY "*" [404 "Resource not found"]))
 
 (decorate handler
-  with-clojure-params)
+  with-clojure-params
+  with-debug)
