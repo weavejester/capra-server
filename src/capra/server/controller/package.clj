@@ -11,6 +11,8 @@
   "Create a new package."
   [new-package]
   (cond
+    (nil? (new-package :account))
+      (response/bad-request "Package must have an account")
     (nil? (new-package :name))
       (response/bad-request "Package must have a name")
     (nil? (new-package :version))
