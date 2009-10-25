@@ -13,6 +13,8 @@
       (response/bad-request "Account must have a name")
     (nil? (new-account :passkey))
       (response/bad-request "Account must have a passkey")
+    (nil? (new-account :email))
+      (response/bad-request "Account must have an email")
     (account/get (new-account :name))
       (response/forbidden "Account already exists")
     :else
