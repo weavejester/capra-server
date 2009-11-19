@@ -2,48 +2,55 @@
   "Functions for accessing the account model."
   (:refer-clojure :exclude [get key list])
   (:require [clojure.set :as set])
-  (:use capra.server.sdb)
   (:use capra.server.util)
-  (:require [capra.server.s3 :as s3]))
+  (:require [capra.server.s3 :as s3])
+  (:use somnium.congomongo)
+  (:use clojure.contrib.def))
 
-(defn get
-  "Retrieve an existing package by account, name and version."
-  [[account name version]]
-  (let [package (get-attrs :packages (str account "/" name "/" version))]
-    (if (package :name)
-      (assoc package :files (read-string (package :files "#{}"))))))
+(defvar- bucket "capra")
 
-(defn key
-  "Return a unique key for a package"
+(defn- get-files
+  "Get a list of all files for a package."
   [package]
-  (str (package :account) "/" (package :name) "/" (package :version)))
+  (for [file (fetch :files :where {:package (package :_id)})]
+    (dissoc file :_id :_ns :package)))
 
-(defn put
-  "Save a package using the account, name and version as a key."
-  [package]
-  (put-attrs :packages
-    (assoc package :sdb/id (key package)
-                   :type   :package
-                   :files  (pr-str (package :files)))))
+(defn- file-exists?
+  "Does the file already exist for the package?"
+  [package sha1]
+  (fetch-one :files :where {:sha1 sha1, :package (package :_id)}))
 
-(defn- add-file-info
-  "Add file information to a package"
-  [package file-info]
-  (merge-with set/union package {:files #{file-info}}))
+(defn- file-stored?
+  "Is the file already stored?"
+  [sha1]
+  (fetch-one :files :where {:sha1 sha1}))
 
 (defn put-file
   "Save a file to S3 and reference it in the SDB package."
   [package file]
-  (let [bucket "capra"
-        sha1 (file-sha1 file)
-        url  (s3/object-url bucket sha1)
-        file-info {:sha1 sha1, :href url}]
-    (s3/put-file bucket sha1 file "application/java-archive")
-    (s3/set-public-readonly bucket sha1)
-    (put (add-file-info package file-info))
-    url))
+  (let [sha1 (file-sha1 file)
+        url  (s3/object-url bucket sha1)]
+    (when-not (file-stored? sha1)
+      (s3/put-file bucket sha1 file "application/java-archive")
+      (s3/set-public-readonly bucket sha1))
+    (when-not (file-exists? package sha1)
+      (insert! :files {:sha1 sha1
+                       :href url
+                       :package (package :_id)}))))
+
+(defn get
+  "Retrieve an existing package by account, name and version."
+  [[account name version]]
+  (let [query {:account account, :name name, :version version}]
+    (if-let [package (fetch-one :packages :where query)]
+      (assoc package :files (get-files package)))))
+
+(defn put
+  "Save a package using the account, name and version as a key."
+  [package]
+  (insert! :packages (dissoc package :files)))
 
 (defn list
   "List all packages for an account."
   [account]
-  (query `{:select * :from "packages" :where (= :account ~account)}))
+  (fetch :packages :where {:account account}))

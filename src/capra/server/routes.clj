@@ -3,8 +3,11 @@
   (:use capra.server.controller.package)
   (:use capra.server.auth)
   (:use capra.server.params)
+  (:use somnium.congomongo)
   (:use compojure.control)
   (:use compojure.http.routes))
+
+(mongo! :db "capra")
 
 (defn with-debug [handler]
   (fn [request]

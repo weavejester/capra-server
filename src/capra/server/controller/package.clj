@@ -17,7 +17,9 @@
       (response/bad-request "Package must have a name")
     (nil? (new-package :version))
       (response/bad-request "Package must have a version")
-    (package/get (package/key new-package))
+    (package/get [(new-package :account)
+                  (new-package :name)
+                  (new-package :version)])
       (response/forbidden "Package already exists")
     :else
       (do (package/put (dissoc new-package :files))

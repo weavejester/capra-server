@@ -1,5 +1,6 @@
 (ns capra.server.response
-  "Functions for returning suitable HTTP responses.")
+  "Functions for returning suitable HTTP responses."
+  (:use capra.server.util))
 
 (defn- make-response
   [status data]
@@ -10,7 +11,7 @@
 (defn resource
   "Return a resource as a Clojure data structure."
   [data]
-  (make-response 200 data))
+  (make-response 200 (dissoc data :_id :_ns)))
 
 (defn created
   "Return a response for a newly created resource."
