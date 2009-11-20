@@ -11,7 +11,7 @@
 (defn resource
   "Return a resource as a Clojure data structure."
   [data]
-  (make-response 200 (dissoc data :_id :_ns)))
+  (make-response 200 data))
 
 (defn created
   "Return a response for a newly created resource."

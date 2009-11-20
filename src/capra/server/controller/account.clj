@@ -33,7 +33,7 @@
   [name]
   (response/resource
     (-> (account/get name)
-      (dissoc :passkey)
+      (dissoc :passkey :_id :_ns)
       (assoc :packages (account-packages name)))))
 
 (defn list-accounts
@@ -51,4 +51,4 @@
       (let [updated (merge existing delta)]
         (account/put updated)
         (response/resource
-          (dissoc updated :passkey))))))
+          (dissoc updated :passkey :_id :_ns))))))

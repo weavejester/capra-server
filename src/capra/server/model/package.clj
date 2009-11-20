@@ -34,9 +34,8 @@
       (s3/put-file bucket sha1 file "application/java-archive")
       (s3/set-public-readonly bucket sha1))
     (when-not (file-exists? package sha1)
-      (insert! :files {:sha1 sha1
-                       :href url
-                       :package (package :_id)}))))
+      (insert! :files {:sha1 sha1, :href url, :package (package :_id)}))
+    url))
 
 (defn get
   "Retrieve an existing package by account, name and version."

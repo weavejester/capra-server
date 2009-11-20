@@ -22,19 +22,20 @@
                   (new-package :version)])
       (response/forbidden "Package already exists")
     :else
-      (do (package/put (dissoc new-package :files))
+      (do (package/put (dissoc new-package :files :_id :_ns))
           (response/created (package-uri new-package)))))
 
 (defn show-package
   "Show an existing package."
   [account name version]
   (response/resource
-    (package/get [account name version])))
+    (dissoc (package/get [account name version])
+      :_id :_ns)))
 
 (defn update-package
   "Update an existing package."
   [account name version delta]
-  (let [delta (dissoc delta :account :name :files)]
+  (let [delta (dissoc delta :account :name :files :_id :_ns)]
     (if-let [existing (package/get [account name version])]
       (let [updated (merge existing delta)]
         (package/put updated)
